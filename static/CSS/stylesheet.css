@@ -1,0 +1,21 @@
+svg {
+    padding-left: 50px;
+}
+
+.axisText {
+    color:  rgb(77, 77, 77) !important;
+}
+
+.bubble:hover {
+    stroke: purple;
+    stroke-width: 2px;
+  }
+
+  .tooltip {
+      margin-left: 50px;
+      /* .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "purple")
+        .style("border-radius", "5px")
+        .style("padding", "10px") */
+  }
