@@ -24,6 +24,28 @@ let svg = d3.select("body")
 let chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+// initial paramaters
+var chosenXaxis = 'poverty';
+var chosenYaxis = 'healthcare';
+
+// function used for updating x-scale variable upon click on axis label
+function xScale(UShealth, chosenXaxis) {
+    // create scales
+    var xLinearScale = d3.scaleLinear()
+        .domain([d3.extent(UShealth, d => d[chosenXaxis])])
+        .range([0, chartWidth]);
+    return xLinearScale;
+}
+
+// function for updating y-scale variable upon click on axis label
+function yScale(UShealth, chosenYaxis) {
+    // create scales
+    var yLinearScale = d3.scaleLinear()
+        .domain([0, d3.max(UShealth, d => (d[chosenYaxis]))])
+        .range([chartHeight, 0]);
+    return yLinearScale;
+}
+
 // Load data from csv
 d3.csv("./static/data/data.csv").then(function(UShealth, err) {
     if (err) throw err;
@@ -56,24 +78,3 @@ d3.csv("./static/data/data.csv").then(function(UShealth, err) {
         .call(bottomAxis);
 });
 
-// initial paramaters
-let chosenXaxis = 'poverty';
-let chosenYaxis = 'healthcare';
-
-// function used for updating x-scale variable upon click on axis label
-function xScale(UShealth, chosenXaxis) {
-    // create scales
-    let xLinearScale = d3.scaleLinear()
-        .domain([d3.extent(UShealth, d => d[chosenXaxis])])
-        .range([0, chartWidth]);
-    return xLinearScale;
-}
-
-// function for updating y-scale variable upon click on axis label
-function yScale(UShealth, chosenYaxis) {
-    // create scales
-    let yLinearScale = d3.scaleLinear()
-        .domain([0, d3.max(UShealth, d => (d[chosenYaxis]))])
-        .range([chartHeight, 0]);
-    return yLinearScale;
-}
