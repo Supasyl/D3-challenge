@@ -10,12 +10,36 @@ svg {
     stroke: purple;
     stroke-width: 2px;
   }
-
+  
   .tooltip {
-      margin-left: 50px;
-      /* .style("opacity", 0)
-        .attr("class", "tooltip")
-        .style("background-color", "purple")
-        .style("border-radius", "5px")
-        .style("padding", "10px") */
+    margin-left: 50px;
+    color: white;
+    text-align: left;
+    background: #551aaf;
+  }
+  
+  .axis-text {
+    font-family: sans-serif;
+    font-weight: bold;
+    fill: purple;
+    text-anchor: middle;
+  }
+  
+  .active {
+    font-weight: bold;
+    fill: purple;
+    transition: fill 0.3s ease-out;
+    text-anchor: middle;
+  }
+  
+  .inactive {
+    font-weight: lighter;
+    fill: purple;
+    transition: fill 0.3s ease-out;
+    text-anchor: middle;
+  }
+  
+  .inactive:hover {
+    fill: fuchsia;
+    cursor: pointer;
   }
