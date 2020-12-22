@@ -32,7 +32,6 @@ var chosenYaxis = 'healthcare';
 function xScale(UShealth, chosenXaxis) {
     // create scales
     var xLinearScale = d3.scaleLinear()
-        // .domain(d3.extent(UShealth, d => d[chosenXaxis]))
         .domain([d3.min(UShealth, d => d[chosenXaxis]) * 0.9, d3.max(UShealth, d => d[chosenXaxis]) * 1.1])
         .range([0, chartWidth]);
     return xLinearScale;
@@ -50,7 +49,6 @@ function yScale(UShealth, chosenYaxis) {
 // function used for updating xAxis variable upon click on axis label
 function renderXaxis(newXscale, xAxis) {
     let bottomAxis = d3.axisBottom(newXscale);
-  
     xAxis
         .transition()
         .duration(1000)
@@ -68,7 +66,7 @@ function renderYaxis(newYscale, yAxis) {
     return yAxis;
 }
   
-// function used for updating x-axis circles group with a transition to new circles
+// function used for updating x and y-axis for circles group with a transition to new circles
 function renderCircles(circlesGroup, newXscale, chosenXaxis, newYscale, chosenYaxis) {
     circlesGroup.transition()
       .duration(1000)
@@ -77,11 +75,12 @@ function renderCircles(circlesGroup, newXscale, chosenXaxis, newYscale, chosenYa
     return circlesGroup;
 }
 
+// function used for updating x and y-axis for stateText in bubbles
 function renderStateText(stateText, newXscale, chosenXaxis, newYscale, chosenYaxis) {
     stateText.transition()
         .duration(1000)
-        .attr("cx", d => newXscale(d[chosenXaxis])-6)
-        .attr("cy", d => newYscale(d[chosenYaxis])+4);
+        .attr("dx", d => newXscale(d[chosenXaxis])-6)
+        .attr("dy", d => newYscale(d[chosenYaxis])+4);
     return stateText;
 }
 
@@ -179,7 +178,6 @@ d3.csv("./static/data/data.csv").then(function(UShealth, err) {
             .attr('cx', data => xLinearScale(data[chosenXaxis]))
             .attr('cy', data => yLinearScale(data[chosenYaxis]))
             .attr('r', 12)
-            // .attr('text', data => data.abbr)
             .style('fill', 'fuchsia')
             .style('opacity', '0.5');
 
@@ -258,6 +256,7 @@ d3.csv("./static/data/data.csv").then(function(UShealth, err) {
     // updateToolTip function above csv import
     var circlesGroup = updateToolTip(chosenXaxis, chosenYaxis, circlesGroup);
 
+    // renderStateText function above csv import
     var stateText = renderStateText(stateText, xLinearScale, chosenXaxis, yLinearScale, chosenYaxis);
 
      // x axis labels event listener
@@ -341,7 +340,6 @@ d3.csv("./static/data/data.csv").then(function(UShealth, err) {
             yAxis = renderYaxis(yLinearScale, yAxis);
 
             // updates circles with new x values
-            // circlesGroup = renderCircles(circlesGroup, yLinearScale, chosenYaxis);
             circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXaxis, yLinearScale, chosenYaxis);
 
             // updates tooltips with new info
