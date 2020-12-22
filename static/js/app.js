@@ -171,8 +171,18 @@ d3.csv("./static/data/data.csv").then(function(UShealth, err) {
         .attr('cx', data => xLinearScale(data[chosenXaxis]))
         .attr('cy', data => yLinearScale(data[chosenYaxis]))
         .attr('r', 10)
+        // .attr('text', data => data.abbr)
         .style('fill', 'fuchsia')
-        .style('opacity', '0.5')
+        .style('opacity', '0.5');
+
+    // circlesGroup = chartGroup.selectAll("circle")
+    // .append('text')
+    // .data(UShealth)
+    //     .text('text', data => data.abbr)
+    //     .classed('stateText', true)
+    //     .attr('dx', data => xLinearScale(data[chosenXaxis]))
+    //     .attr('dy', data => yLinearScale(data[chosenYaxis]))
+    //     .attr('font-size', 10);
 
     // Create group for three x-axis labels
     var xlabelsGroup = chartGroup.append("g")
@@ -251,9 +261,7 @@ d3.csv("./static/data/data.csv").then(function(UShealth, err) {
             // functions here found above csv import
             // updates x scale for new data
             var xLinearScale = xScale(UShealth, chosenXaxis);
-
-            // updates x axis with transition
-            xAxis = renderXaxis(xLinearScale, xAxis);
+            var yLinearScale = yScale(UShealth, chosenYaxis);
 
             // updates circles with new x values
             circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXaxis, yLinearScale, chosenYaxis);
@@ -308,10 +316,11 @@ d3.csv("./static/data/data.csv").then(function(UShealth, err) {
 
             // functions here found above csv import
             // updates x scale for new data
+            var xLinearScale = xScale(UShealth, chosenXaxis);
             var yLinearScale = yScale(UShealth, chosenYaxis);
 
             // updates x axis with transition
-            yAxis = renderYaxis(yLinearScale, yAxis);
+            //yAxis = renderYaxis(yLinearScale, yAxis);
 
             // updates circles with new x values
             // circlesGroup = renderCircles(circlesGroup, yLinearScale, chosenYaxis);
