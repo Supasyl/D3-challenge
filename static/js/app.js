@@ -32,7 +32,8 @@ var chosenYaxis = 'healthcare';
 function xScale(UShealth, chosenXaxis) {
     // create scales
     var xLinearScale = d3.scaleLinear()
-        .domain(d3.extent(UShealth, d => d[chosenXaxis]))
+        // .domain(d3.extent(UShealth, d => d[chosenXaxis]))
+        .domain([d3.min(UShealth, d => d[chosenXaxis]) * 0.9, d3.max(UShealth, d => d[chosenXaxis]) * 1.1])
         .range([0, chartWidth]);
     return xLinearScale;
 }
@@ -74,6 +75,14 @@ function renderCircles(circlesGroup, newXscale, chosenXaxis, newYscale, chosenYa
       .attr("cx", d => newXscale(d[chosenXaxis]))
       .attr("cy", d => newYscale(d[chosenYaxis]));
     return circlesGroup;
+}
+
+function renderStateText(stateText, newXscale, chosenXaxis, newYscale, chosenYaxis) {
+    stateText.transition()
+        .duration(1000)
+        .attr("cx", d => newXscale(d[chosenXaxis])-6)
+        .attr("cy", d => newYscale(d[chosenYaxis])+4);
+    return stateText;
 }
 
 // function used for updating circles group with new tooltip
@@ -122,7 +131,6 @@ function updateToolTip(chosenXaxis, chosenYaxis, circlesGroup) {
     });
   
     return circlesGroup;
-   
 }
 
 // Load data from csv
@@ -163,26 +171,28 @@ d3.csv("./static/data/data.csv").then(function(UShealth, err) {
 
     // scatterplot & add bubbles to the scatterplot
     var circlesGroup = chartGroup.selectAll("circle")
-    .classed('bubblePlot', true)
-    .data(UShealth)
-    .enter()
-    .append('circle')
-        .classed('bubble', true)
-        .attr('cx', data => xLinearScale(data[chosenXaxis]))
-        .attr('cy', data => yLinearScale(data[chosenYaxis]))
-        .attr('r', 10)
-        // .attr('text', data => data.abbr)
-        .style('fill', 'fuchsia')
-        .style('opacity', '0.5');
+        .classed('bubblePlot', true)
+        .data(UShealth)
+        .enter()
+        .append('circle')
+            .classed('bubble', true)
+            .attr('cx', data => xLinearScale(data[chosenXaxis]))
+            .attr('cy', data => yLinearScale(data[chosenYaxis]))
+            .attr('r', 12)
+            // .attr('text', data => data.abbr)
+            .style('fill', 'fuchsia')
+            .style('opacity', '0.5');
 
-    // circlesGroup = chartGroup.selectAll("circle")
-    // .append('text')
-    // .data(UShealth)
-    //     .text('text', data => data.abbr)
-    //     .classed('stateText', true)
-    //     .attr('dx', data => xLinearScale(data[chosenXaxis]))
-    //     .attr('dy', data => yLinearScale(data[chosenYaxis]))
-    //     .attr('font-size', 10);
+    // create state abbreviations inside bubbles
+    var stateText = chartGroup.selectAll(null)
+        .classed('stateText', true)
+        .data(UShealth)    
+        .enter()
+        .append('text')
+            .text(data => data.abbr)
+            .attr('dx', data => xLinearScale(data[chosenXaxis])-6)
+            .attr('dy', data => yLinearScale(data[chosenYaxis])+4)
+            .attr('font-size', 10);
 
     // Create group for three x-axis labels
     var xlabelsGroup = chartGroup.append("g")
@@ -248,6 +258,8 @@ d3.csv("./static/data/data.csv").then(function(UShealth, err) {
     // updateToolTip function above csv import
     var circlesGroup = updateToolTip(chosenXaxis, chosenYaxis, circlesGroup);
 
+    var stateText = renderStateText(stateText, xLinearScale, chosenXaxis, yLinearScale, chosenYaxis);
+
      // x axis labels event listener
     xlabelsGroup.selectAll("text").on("click", function() {
         // get value of selection
@@ -263,11 +275,17 @@ d3.csv("./static/data/data.csv").then(function(UShealth, err) {
             var xLinearScale = xScale(UShealth, chosenXaxis);
             var yLinearScale = yScale(UShealth, chosenYaxis);
 
+            // updates x axis with transition
+            xAxis = renderXaxis(xLinearScale, xAxis);
+
             // updates circles with new x values
             circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXaxis, yLinearScale, chosenYaxis);
 
             // updates tooltips with new info
             circlesGroup = updateToolTip(chosenXaxis, chosenYaxis, circlesGroup);
+
+            // updates location of state abbreviation text to new bubble location
+            stateText = renderStateText(stateText, xLinearScale, chosenXaxis, yLinearScale, chosenYaxis);
 
             // changes x-classes to change bold text
             if (chosenXaxis === "poverty") {
@@ -320,7 +338,7 @@ d3.csv("./static/data/data.csv").then(function(UShealth, err) {
             var yLinearScale = yScale(UShealth, chosenYaxis);
 
             // updates x axis with transition
-            //yAxis = renderYaxis(yLinearScale, yAxis);
+            yAxis = renderYaxis(yLinearScale, yAxis);
 
             // updates circles with new x values
             // circlesGroup = renderCircles(circlesGroup, yLinearScale, chosenYaxis);
@@ -328,6 +346,9 @@ d3.csv("./static/data/data.csv").then(function(UShealth, err) {
 
             // updates tooltips with new info
             circlesGroup = updateToolTip(chosenXaxis, chosenYaxis, circlesGroup);
+
+            // updates location of state abbreviation text to new bubble location
+            stateText = renderStateText(stateText, xLinearScale, chosenXaxis, yLinearScale, chosenYaxis);
 
             // changes y-classes to change bold text
             if (chosenYaxis === "healthcare") {

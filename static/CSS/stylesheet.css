@@ -2,8 +2,24 @@ svg {
     padding-left: 50px;
 }
 
+h1 {
+    color: purple;
+    padding-left: 200px;
+    padding-top: 20px;
+}
+
+h2 {
+    color: purple;
+    font-size: 16px;
+    padding-left: 240px;
+}
+
 .axisText {
     color:  rgb(77, 77, 77) !important;
+}
+
+.stateText {
+    color: purple;
 }
 
 .bubble:hover {
